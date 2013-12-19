@@ -5,25 +5,25 @@ from queue import Queue
 class Vertex:
     def __init__(self, name):
         self.name = name
-        self.in_degree_set = set()
-        self.out_degree_set = set()
+        self.in_degree_list = []
+        self.out_degree_list = []
 
     def __str__(self):
         return "Name: %s\tin-degrees:%s\tout-degrees: %s" % (
             self.name,
-            ",".join(v.name for v in self.in_degree_set) if len(self.in_degree_set) > 0 else "-",
-            ",".join(v.name for v in self.out_degree_set) if len(self.out_degree_set) > 0 else "-"
+            ",".join(v.name for v in self.in_degree_list) if len(self.in_degree_list) > 0 else "-",
+            ",".join(v.name for v in self.out_degree_list) if len(self.out_degree_list) > 0 else "-"
 
         )
 
     def add_out_degree(self, vertex):
-        self.out_degree_set.update([vertex])
+        self.out_degree_list.append(vertex)
 
     def add_in_degree(self, vertex):
-        self.in_degree_set.update([vertex])
+        self.in_degree_list.append(vertex)
 
     def remove_in_degree(self, vertex):
-        self.in_degree_set.remove(vertex)
+        self.in_degree_list.remove(vertex)
 
     def __eq__(self, other):
         return self.name == other.name
@@ -40,17 +40,16 @@ def add_edge(u, v):
 def topological_sort(V):
     Q = Queue()
     for u in set(V):
-        if len(u.in_degree_set) == 0:
+        if len(u.in_degree_list) == 0:
             Q.put(u)
 
     Output = []
     while not Q.empty():
         u = Q.get()
         Output.append(u)
-
-        for v in u.out_degree_set:
+        for v in u.out_degree_list:
             v.remove_in_degree(u)
-            if len(v.in_degree_set) == 0:
+            if len(v.in_degree_list) == 0:
                 Q.put(v)
     return Output
 
